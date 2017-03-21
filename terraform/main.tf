@@ -88,9 +88,14 @@ resource "aws_instance" "salt" {
   # In this case, we just install SaltStack from their official PPA.
   provisioner "remote-exec" {
     inline = [
+      "sudo hostname salt",
+      "sudo bash -c 'echo salt > /etc/hostname'",
+      "sudo bash -c 'echo -e \"127.0.0.1\tsalt\n\" >> /etc/hosts'",
       "sudo add-apt-repository -y ppa:saltstack/salt",
       "sudo apt-get update",
-      "sudo apt-get -y install salt-master salt-minion",
+      "sudo apt-get -y install salt-master salt-minion git",
+      "sleep 10", # To ensure the minion has time to send the signing request
+      "sudo salt-key -y -A",
     ]
   }
 }
