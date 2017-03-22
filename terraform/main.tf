@@ -96,6 +96,10 @@ resource "aws_instance" "salt" {
       "sudo apt-get -y install salt-master salt-minion git",
       "sleep 10", # To ensure the minion has time to send the signing request
       "sudo salt-key -y -A",
+      "sudo bash -c 'cd /root && git clone https://github.com/wsandin/effective-broccoli.git'",
+      "sudo ln -s /root/effective-broccoli/salt /srv/salt",
+      "sudo bash -c 'echo \"startup_states: highstate\" > /etc/salt/minion'",
+      "sudo /etc/init.d/salt-minion restart"
     ]
   }
 }
